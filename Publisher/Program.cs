@@ -6,8 +6,14 @@ var app = builder.Build();
 
 app.UseHttpsRedirection();
 
+/// list of existing channels
 List<Channel> channels = new List<Channel>();
 
+/// <summary>
+/// POST method to subscribe to a selected channel
+/// </summary>
+/// <param name="channelName"> name of the channel to subscribe to </param>
+///  <param name="sub"> subscriber to add to the channel </param>
 app.MapPost("api/channels/{channelName}/subscribe", async (string channelName, Subscriber sub) => 
 {
     Channel channel = channels.FirstOrDefault(c => c.channelName == channelName);
@@ -28,6 +34,11 @@ app.MapPost("api/channels/{channelName}/subscribe", async (string channelName, S
         channel.subscribers.Add(sub);
 });
 
+/// <summary>
+/// POST method to publish a message on a selected channel
+/// </summary>
+/// <param name="channelName"> name of the channel to publish the message on </param>
+/// <param name="message"> message to publish on the selected channel </param>
 app.MapPost("api/channels/{channelName}/publish", async (string channelName, Message message) =>
 {
     Channel channel = channels.FirstOrDefault(c => c.channelName == channelName);
@@ -46,6 +57,11 @@ app.MapPost("api/channels/{channelName}/publish", async (string channelName, Mes
     channel.messages.Add(message);
 });
 
+/// <summary>
+/// GET method to retrieve all the messages for a selected subscriber
+/// </summary>
+/// <param name="subscriberName"> name of the subscriber to retrieve messages for </param>
+/// <returns> list of message texts </returns>
 app.MapGet("api/subscribers/{subscriberName}/messages", async (string subscriberName) =>
 {
     IEnumerable<Channel> subscribedChannels = channels.Where((channel) =>
