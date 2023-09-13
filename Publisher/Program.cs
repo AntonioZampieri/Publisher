@@ -26,15 +26,28 @@ app.MapPost("api/channels/{channelName}/subscribe", async (string channelName, S
     channel.subscribers.Add(sub);
 });
 
-app.MapPost("api/channels/{channelName}/publish", async (string channelName, Message msg) =>
+app.MapPost("api/channels/{channelName}/publish", async (string channelName, Message message) =>
 {
-    throw new NotImplementedException();
+    Channel channel = channels.FirstOrDefault(c => c.channelName == channelName);
+
+    if (channel == null)
+    {
+        channel = new Channel
+        {
+            channelName = channelName,
+            messages = new List<Message>(),
+            subscribers = new List<Subscriber>()
+        };
+
+        channels.Add(channel);
+    }
+
+    channel.messages.Add(message);
 });
 
 app.MapGet("api/subscribers/{subscriberName}/messages", async (string subscriberName) =>
 {
-    return new List<string>();
-    //throw new NotImplementedException();
+    throw new NotImplementedException();
 });
 
 app.Run();
