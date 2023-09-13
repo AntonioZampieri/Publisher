@@ -48,7 +48,18 @@ app.MapPost("api/channels/{channelName}/publish", async (string channelName, Mes
 
 app.MapGet("api/subscribers/{subscriberName}/messages", async (string subscriberName) =>
 {
-    throw new NotImplementedException();
+    IEnumerable<Channel> subscribedChannels = channels.Where((channel) =>
+    {
+        return channel.subscribers.FirstOrDefault(s => s.SubscriberName == subscriberName) != null;
+    });
+
+    List<string> messagesToSend = new List<string>();
+    subscribedChannels.AsParallel().ForAll(C =>
+    {
+        C.messages.AsParallel().ForAll(message => { messagesToSend.Add(message.MessageText); });
+    });
+
+    return Results.Ok(messagesToSend);
 });
 
 app.Run();
