@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.SignalR;
 using Publisher.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,7 +24,8 @@ app.MapPost("api/channels/{channelName}/subscribe", async (string channelName, S
         channels.Add(channel);
     }
 
-    channel.subscribers.Add(sub);
+    if(channel.subscribers.FirstOrDefault(s => s.SubscriberName == sub.SubscriberName) == null)
+        channel.subscribers.Add(sub);
 });
 
 app.MapPost("api/channels/{channelName}/publish", async (string channelName, Message message) =>
@@ -38,7 +40,6 @@ app.MapPost("api/channels/{channelName}/publish", async (string channelName, Mes
             messages = new List<Message>(),
             subscribers = new List<Subscriber>()
         };
-
         channels.Add(channel);
     }
 
