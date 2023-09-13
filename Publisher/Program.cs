@@ -13,7 +13,8 @@ List<Channel> channels = new List<Channel>();
 /// POST method to subscribe to a selected channel
 /// </summary>
 /// <param name="channelName"> name of the channel to subscribe to </param>
-///  <param name="sub"> subscriber to add to the channel </param>
+/// <param name="sub"> subscriber to add to the channel </param>
+/// <returns> OK response </returns>
 app.MapPost("api/channels/{channelName}/subscribe", async (string channelName, Subscriber sub) => 
 {
     Channel channel = channels.FirstOrDefault(c => c.channelName == channelName);
@@ -32,6 +33,8 @@ app.MapPost("api/channels/{channelName}/subscribe", async (string channelName, S
 
     if(channel.subscribers.FirstOrDefault(s => s.SubscriberName == sub.SubscriberName) == null)
         channel.subscribers.Add(sub);
+
+    return Results.Ok();
 });
 
 /// <summary>
@@ -39,6 +42,7 @@ app.MapPost("api/channels/{channelName}/subscribe", async (string channelName, S
 /// </summary>
 /// <param name="channelName"> name of the channel to publish the message on </param>
 /// <param name="message"> message to publish on the selected channel </param>
+/// <returns> OK response </returns>
 app.MapPost("api/channels/{channelName}/publish", async (string channelName, Message message) =>
 {
     Channel channel = channels.FirstOrDefault(c => c.channelName == channelName);
@@ -55,6 +59,8 @@ app.MapPost("api/channels/{channelName}/publish", async (string channelName, Mes
     }
 
     channel.messages.Add(message);
+
+    return Results.Ok();
 });
 
 /// <summary>
