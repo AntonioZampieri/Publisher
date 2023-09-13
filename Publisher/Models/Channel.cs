@@ -4,8 +4,8 @@
     {
         public string channelName { get; set; }
 
-        List<Message> messages { get; set; }
+        public List<Message> messages { get; set; }
 
-        List<Subscriber> subscribers { get; set; }
+        public List<Subscriber> subscribers { get; set; }
     }
 }
